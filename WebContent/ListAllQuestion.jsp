@@ -1,25 +1,66 @@
-  <head>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
+        <title>QuestionList</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
+        
     </head>
-    <body>
-      <form method="post" action="create_tables">
-        <h1>Welcome Admin!</h1>
-        
-             
-        
-         <span style="color: red">${message}</span>
-        <button type="submit" name="buttonSubmit" value="initDb" >Initialize Database
-          </button>
-        
-      </form>
-      
-    </body>
-     <style>
+<body>
+
+<%-- need to debut this part of the code to make it work, ideally we would like to see 
+ all people are listed intially when the page is run as the entry page.
+--%> 
+<%--
+if(request.getParameter("listQs") == null) { // we want to make sure that we already have all the people
+	UserDAO userDAO = new UserDAO();        // listed in attribute 'listPeople'
+	List<Question> listQs = userDAO.listAllQuestion();
+	request.setAttribute("listQs", listQs);       
+}
+--%>
+
+
+  
+        <h2>
+            <a href="AskNewQuestionForUser.jsp">Add New Question</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="list_all_question">List All question</a> 
+        </h2>
+   
+    <div align="center">
+        <table border="1" cellpadding="5">
+            <caption><h2>List of Questions</h2></caption>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Tags</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            <c:forEach var="question" items="${listQs}">
+                <tr>
+                    <td><c:out value="${question.questionID}" /></td>
+                    <td><c:out value="${question.question}" /></td>
+                    <td><c:out value="${question.tags}" /></td>
+                    <td><c:out value="${question.date}" /></td>
+                    <td>
+                        <a href="question_detail?id=<c:out value='${question.questionID}' />">Detail</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                    
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>   
+</body>
+</html>
+
+<style>
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -33,7 +74,7 @@ body {
 }
 
 form {
-  max-width: 300px;
+  max-width: 350px;
   margin: 10px auto;
   padding: 10px 20px;
   background: #f4f7f8;
@@ -44,6 +85,23 @@ h1 {
   margin: 0 0 30px 0;
   text-align: center;
 }
+
+h2 {
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
+table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
 
 input[type="text"],
 input[type="password"],
@@ -86,14 +144,16 @@ button {
   padding: 19px 39px 18px 39px;
   color: #FFF;
   background-color: #4bc970;
+  display: block;
   font-size: 18px;
   text-align: center;
   font-style: normal;
   border-radius: 5px;
-  width: 100%;
+  width: 60%;
   border: 1px solid #3ac162;
   border-width: 1px 1px 3px;
   box-shadow: 0 -1px 0 rgba(255,255,255,0.1) inset;
+  margin: 0 auto;
   margin-bottom: 10px;
 }
 
@@ -134,11 +194,11 @@ label.light {
 @media screen and (min-width: 480px) {
 
   form {
-  	margin-top: 150px;
-    max-width: 480px;
+    max-width: 580px;
   }
 
 }
  </style>
-</html>
+ 
+  
     

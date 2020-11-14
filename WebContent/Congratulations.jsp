@@ -1,25 +1,38 @@
-  <head>
+<html>
+<head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
+        <title>Home</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
     </head>
-    <body>
-      <form method="post" action="create_tables">
-        <h1>Welcome Admin!</h1>
-        
+<body>
+
+<%-- need to debut this part of the code to make it work, ideally we would like to see 
+ all people are listed intially when the page is run as the entry page.
+ 
+<%
+if(request.getParameter("listPeople") == null) { // we want to make sure that we already have all the people
+	PeopleDAO peopleDAO = new PeopleDAO();        // listed in attribute 'listPeople'
+	List<People> listPeople = peopleDAO.listAllPeople();
+	request.setAttribute("listPeople", listPeople);       
+}
+%>
+--%>
+
+
+    <center>
+        <h1>Congratulations! You have signed up successfully.</h1>
+        <h2>
+            <a href="SignIn.jsp">Do you want to Sign In now?</a>
              
-        
-         <span style="color: red">${message}</span>
-        <button type="submit" name="buttonSubmit" value="initDb" >Initialize Database
-          </button>
-        
-      </form>
-      
-    </body>
-     <style>
+        <h2>
+    </center> 
+</body>
+</html>
+
+<style>
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -27,10 +40,16 @@
 }
 
 body {
-	background-image: radial-gradient(ivory, lightyellow);
+  background-image: radial-gradient(ivory, lightyellow);
+  font-size: 30 px;
   font-family: 'Nunito', sans-serif;
   color: #384047;
+  
 }
+
+
+
+
 
 form {
   max-width: 300px;
@@ -134,11 +153,11 @@ label.light {
 @media screen and (min-width: 480px) {
 
   form {
-  	margin-top: 150px;
     max-width: 480px;
   }
 
 }
  </style>
-</html>
+ 
+  
     

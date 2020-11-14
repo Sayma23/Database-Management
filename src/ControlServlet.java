@@ -25,10 +25,11 @@ import java.sql.PreparedStatement;
  */
 public class ControlServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private PeopleDAO peopleDAO;
+    private UserDAO peopleDAO;
+    private String currentUserName = "";
  
     public void init() {
-        peopleDAO = new PeopleDAO(); 
+        peopleDAO = new UserDAO(); 
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -43,36 +44,77 @@ public class ControlServlet extends HttpServlet {
         try {
             switch (action) {
             case "/create_tables":
-            	System.out.println("This is DIY create table in controlservlet");
+            	System.out.println("This creates table for root in controlservlet"); 
                 createTable(request, response);
                 break;
+            case "/login":
+            	System.out.println("This is DIY login in controlservlet");
+                userLogin(request, response);
+                break;
             case "/sign_up":
-            	System.out.println("This is DIY create table in controlservlet");
+            	System.out.println("This is DIY sign up in controlservlet");
                 userSignup(request, response);
                 break;
+            case "/ask_new_question":
+            	System.out.println("This is DIY asking new question in controlservlet");
+                askNewQuestion(request, response);
+                break;
+            case "/list_all_question":
+            	System.out.println("This is DIY listing all questions in controlservlet");
+                listAllQuestions(request, response);
+                break;
+            case "/question_detail":
+            	System.out.println("This is DIY gives all youtube videos with a question in controlservlet");
+                getVideosOfQuestion(request, response);
+                break;
+            case "/insert_new_video":
+            	System.out.println("This is DIY insert new youtube videos with a question in controlservlet");
+                insertNewVideo(request, response);
+                break;
+            case "/search_video":
+            	System.out.println("This is DIY insert new youtube videos with a question in controlservlet");
+                searchVideo(request, response);
+                break;
+            case "/write_review":
+            	System.out.println("This is DIY write reviews for video in controlservlet");
+                writeReview(request, response);
+                break;
+            case "/add_favourite":
+            	System.out.println("This is DIY add a video in favourite list in controlservlet");
+                addFavourite(request, response);
+                break;
+            case "/remove_favourite":
+            	System.out.println("This is DIY removes a video in favourite list in controlservlet");
+                removeFavourite(request, response);
+                break;
+            case "/list_all_favourite":
+            	System.out.println("This is DIY list all favourite video in controlservlet");
+                listAllFavourite(request, response);
+                break;
             case "/new":
-            	System.out.println("This is DIY new method in controlservlet");
+            	System.out.println("This is for creating new student in controlservlet"); // not for DIY
                 showNewForm(request, response);
                 break;
             case "/insert":
-            	System.out.println("This is DIY insert method in controlservlet");
+            	System.out.println("This is for inserting new student in controlservlet"); //not for DIY
             	insertPeople(request, response);
                 break;
             case "/delete":
-            	System.out.println("This is DIY delete method in controlservlet");
+            	System.out.println("This is for deleting existing student in controlservlet"); //not for DIY
             	deletePeople(request, response);
                 break;
             case "/edit":
-            	System.out.println("This is DIY edit method in controlservlet");
+            	System.out.println("This is for editing existing student in controlservlet"); //not for DIY
                 showEditForm(request, response);
                 break;
             case "/update":
-            	System.out.println("This is DIY update method in controlservlet");
+            	System.out.println("This is for updating existing student in controlservlet"); //not for DIY
             	updatePeople(request, response);
                 break;
             default:
-            	System.out.println("This is DIY default list in controlservlet");
-            	listPeople(request, response);           	
+            	System.out.println("This is showing student list in controlservlet");  //not for DIY
+            	//listPeople(request, response);    
+            	getVideosOfQuestion(request, response);
                 break;
             }
         } catch (SQLException ex) {
@@ -86,8 +128,18 @@ public class ControlServlet extends HttpServlet {
     private void listPeople(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         List<People> listPeople = peopleDAO.listAllPeople();
-        request.setAttribute("listPeople", listPeople);       
-        RequestDispatcher dispatcher = request.getRequestDispatcher("PeopleList.jsp");       
+        request.setAttribute("listPeople", listPeople);   
+        System.out.println("size of peoples " + listPeople.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListPeople.jsp");       
+        dispatcher.forward(request, response);
+    }
+    
+    private void listUsers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        List<User> listUser = peopleDAO.listAllUser();
+        System.out.println("<<<<<<length:  " + listUser.size());
+        request.setAttribute("listUser_", listUser);       
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListAllUser.jsp");       
         dispatcher.forward(request, response);
     }
  
@@ -146,25 +198,215 @@ public class ControlServlet extends HttpServlet {
         response.sendRedirect("list"); 
     }
     
+    
+    //############################### DIY METHODS###################################
+    
     private void createTable(HttpServletRequest request, HttpServletResponse response)
     		throws SQLException, IOException, ServletException {
     	
         peopleDAO.createTableForRoot();
-        
+        response.sendRedirect("AdminDashboard.jsp"); 
+  
+    }
+    
+    private void userLogin(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ParseException, ServletException {
+        String emailID = request.getParameter("email");
+        String password = request.getParameter("password");
+        System.out.println("user login in control servelte");
+        if(emailID.equalsIgnoreCase("root") && password.equalsIgnoreCase("pass1234")) response.sendRedirect("AdminDashboard.jsp");
+        else {
+        	boolean user = peopleDAO.loginUser(emailID, password);
+        	if(user) {
+        		currentUserName = emailID;
+        		RequestDispatcher dispatcher = request.getRequestDispatcher("HomepageForUser.jsp");
+                request.setAttribute("userName", emailID);
+                dispatcher.forward(request, response);
+        		//response.setAttribute("name", "value");
+        		//response.sendRedirect("HomepageForUser.jsp?userName=${emailID}");
+        	}
+        	else response.sendRedirect("SignIn.jsp");
+        }
     }
     
     private void userSignup(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ParseException {
+    	
         String firstName = request.getParameter("first_name");
         String lastName = request.getParameter("last_name");
         String emailID = request.getParameter("email");
         String password = request.getParameter("password");
         String gender = request.getParameter("gender");
         String dob = request.getParameter("DOB");
-        User user = new User(emailID, firstName, lastName, password, dob, gender);
-        System.out.println("user sign up in control servelte");
-        peopleDAO.insertNewUser(user);
+        if(peopleDAO.checkForExistingUser(emailID)) response.sendRedirect("AlreadyUser.jsp");
+        else {
+        	User user = new User(emailID, firstName, lastName, password, dob, gender);
+            System.out.println("user sign up in control servelte");
+            boolean isSuccessful = peopleDAO.insertNewUser(user);
+            if(isSuccessful) response.sendRedirect("Congratulations.jsp");
+            else response.sendRedirect("Signup.jsp");
+        }
+        
         //response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
     }
+
+
+
+    private void askNewQuestion(HttpServletRequest request, HttpServletResponse response)
+        throws SQLException, IOException, ParseException {
+	
+    	String question = request.getParameter("question");
+    	String tag_1 = request.getParameter("tag_1");
+    	String tag_2 = request.getParameter("tag_2");
+    	String tag_3 = request.getParameter("tag_3");
+    	String userName = request.getParameter("userName");
+    
+    	
+    	System.out.println("user asking question method in control servelte::");
+    	System.out.println("question: " + question + " tags: " + tag_1 + " user: " + userName);
+    	boolean isSuccessful = peopleDAO.insertNewQuestion(question, tag_1 + ", " + tag_2 + ", " + tag_3, userName );
+    	if(isSuccessful) response.sendRedirect("ListAllQuestion.jsp");
+    	else response.sendRedirect("Sorry.jsp");
+    
+    
+    	//response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
+		}
+    
+    private void listAllQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ParseException, ServletException {
+    	
+    	List<Question> listQs = peopleDAO.listAllQuestion();
+        System.out.println("<<<<<<length>>>>>>>>  " + listQs.size());
+        request.setAttribute("listQs", listQs);       
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListAllQuestion.jsp");       
+        dispatcher.forward(request, response);
+        
+        
+        	//response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
+    		}
+    
+    private void getVideosOfQuestion(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        //Question question = peopleDAO.fetchQuestion(id);
+        
+        List<Video> listOfVideos = peopleDAO.fetchVideosForQuestion(id);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("QuestionDetail.jsp");
+        request.setAttribute("listOfVideos", listOfVideos);
+        request.setAttribute("questionID", id);
+        dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
+ 
+    }
+    
+    private void insertNewVideo(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ParseException, ServletException {
+    	
+        	int id = Integer.parseInt(request.getParameter("questionID"));
+        	String url = request.getParameter("video");
+        	String title = request.getParameter("title");
+        	String desc = request.getParameter("desc");
+        	//String userName = request.getParameter("userName");
+        
+        	
+        	System.out.println("user inserting new video in control servelte::");
+        	System.out.println("questionID: " + id + " url: " + url + " title: " + title );
+        	boolean isSuccessful = peopleDAO.insertNewVideo(id, url, title, desc, currentUserName );
+        	if(isSuccessful) {
+        		List<Video> listOfVideos = peopleDAO.fetchVideosForQuestion(id);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("QuestionDetail.jsp");
+                request.setAttribute("listOfVideos", listOfVideos);
+                request.setAttribute("questionID", id);
+                dispatcher.forward(request, response);
+        	}
+        	else response.sendRedirect("Sorry.jsp");
+        
+        
+        	//response.sendRedirect("list");  // The sendRedirect() method works at client side and sends a new request
+    }
+    private void searchVideo(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        String question = request.getParameter("ques");
+        String userName = request.getParameter("userName");
+        
+        List<String> listOfVideos = peopleDAO.searchForVideos(question);
+        
+        System.out.println("______________size______" + listOfVideos.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("SearchForVideo.jsp");
+        request.setAttribute("listOfVideos", listOfVideos);
+        request.setAttribute("userName", userName);
+        dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
+ 
+    }
+    
+    private void writeReview(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        String remark = request.getParameter("remark");
+        String score = request.getParameter("review");
+        String url = request.getParameter("url");
+        String userName = request.getParameter("userName");
+        boolean isSuccessful = peopleDAO.insertReview(remark, score, url, userName);
+        
+        if(!isSuccessful) {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
+        	dispatcher.forward(request, response);
+        }else {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("HomepageForUser.jsp");
+            request.setAttribute("userName", userName);
+            dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
+        }
+        
+ 
+    }
+    
+    private void addFavourite(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        String url = request.getParameter("url");
+        String userName = request.getParameter("userName");
+        boolean isSuccessful = peopleDAO.addFavourite(url, userName);
+        
+        if(!isSuccessful) {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
+        	dispatcher.forward(request, response);
+        }else {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("HomepageForUser.jsp");
+            request.setAttribute("userName", userName);
+            dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
+        }
+        
+ 
+    }
+    
+    private void listAllFavourite(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        String userName = request.getParameter("userName");
+        List<String> listOfVideos = peopleDAO.listFavourites(userName);
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfVideos.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ShowMyFavourites.jsp");
+        request.setAttribute("listOfVideos", listOfVideos);
+        request.setAttribute("userName", userName);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void removeFavourite(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        String url = request.getParameter("url");
+        String userName = request.getParameter("userName");
+        boolean isSuccessful = peopleDAO.removeFavourite(url, userName);
+        
+        if(!isSuccessful) {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
+        	dispatcher.forward(request, response);
+        }else {
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("HomepageForUser.jsp");
+            request.setAttribute("userName", userName);
+            dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
+        }
+        
+ 
+    }
+ 
 
 }

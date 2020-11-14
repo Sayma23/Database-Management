@@ -1,20 +1,67 @@
 <head>
+	<script> 
+	
+		
+			function ValidateEmail(form) 
+			{
+    			mail = form.email.value;
+				var re = /\S+@\S+\.\S+/;
+ 				if (!re.test(mail))
+  				{
+ 					alert("\nInvalid email address!! Please try again...");
+ 					return false;
+  				}
+ 				return true;
+    	
+			}
+            // Function to check Whether both passwords 
+            // is same or not. 
+            function checkPassword(form) { 
+                password1 = form.password.value; 
+                password2 = form.confirm_password.value; 
+  
+                // If password not entered 
+                if (password1 != password2) { 
+                    alert ("\nPassword did not match: Please try again...") ;
+                    return false; 
+                } 
+                else return true;
+  
+                
+            }
+            
+            function isValidDate(form)
+            {
+                dateString = form.DOB.value
+                var date_regex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
+                if (!(date_regex.test(dateString))) {
+                	alert ("\nInvalid date of birth: Please try again...") ;
+                    return false;
+                }
+            }
+            
+            
+            function ValidateForm(form){
+            	
+            	return ValidateEmail(form) && checkPassword(form) && isValidDate(form);
+            }
+        </script> 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign Up Form</title>
+        <title>Sign Up</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
 
-      <form action="sign_up" method="post">
+       <form onSubmit = "return ValidateForm(this);" action="sign_up" method="post">
       
         <h1>WSU-DIY Sign Up</h1>
         
         <fieldset>     
-          <label for="mail">Email:</label><span style="color: red">${emailError}</span>
-          <input type="text" name="email" required>
+          <label for="email">Email:</label><span style="color: red">${emailError}</span>
+          <input type="text" name="email" placeholder="me@example.com" required>
           
           <label for="password">Password:</label>
           <input type="password" name="password" required>
@@ -33,10 +80,15 @@
           <input type="radio" name="gender" value="Female"><label for="Female" class="light">Female</label>
           
           <label for="age">Date of birth:</label>
-          <input type="text" id="age" name="DOB" value="yyyy-mm-dd" required>
+          <input type="text" id="age" name="DOB" placeholder="yyyy-mm-dd" required>
           
         </fieldset>
         <button type="submit">Sign Up</button>
+        
+        <center>
+            <a href="SignIn.jsp">Do you want to Sign In now?</a>
+             
+        </center>
       </form>
       
     </body>
@@ -50,6 +102,7 @@
 }
 
 body {
+	background-image: radial-gradient(ivory, lightyellow);
   font-family: 'Nunito', sans-serif;
   color: #384047;
 }

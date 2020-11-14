@@ -1,25 +1,47 @@
-  <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
-        <link rel="stylesheet" href="css/normalize.css">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+    <title>InsertNewVideo</title>
+    <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
-    </head>
-    <body>
-      <form method="post" action="create_tables">
-        <h1>Welcome Admin!</h1>
+</head>
+<body>
+
+ <form action="insert_new_video" method="post">
+	
         
+        <h3>
+            <a href="ListAllQuestion.jsp">Show all questions</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="SearchForVideos.jsp">Search for videos</a>
              
-        
-         <span style="color: red">${message}</span>
-        <button type="submit" name="buttonSubmit" value="initDb" >Initialize Database
-          </button>
-        
-      </form>
-      
-    </body>
-     <style>
+        </h3>
+
+           
+            
+            <fieldset>     
+          <label for="video">Video URL:</label>
+          <input type="text" name="video" size = "50" placeholder="https://www.youtube.com/embed/~"required>
+          
+          <label for="title">Title:</label>
+          <input type="text" name="title" size = "100" required>
+          
+          <label for="desc">Description:</label>
+          <input type="text" name="desc" size = "200" required>
+          
+          <input type="hidden" name="questionID" value="<%= request.getParameter("questionID")%>" required>
+          </fieldset>
+          
+        <button type="submit">Post</button>
+        </form> 
+</body>
+  
+</html>
+
+<style>
 *, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -33,7 +55,7 @@ body {
 }
 
 form {
-  max-width: 300px;
+  max-width: 350px;
   margin: 10px auto;
   padding: 10px 20px;
   background: #f4f7f8;
@@ -41,6 +63,10 @@ form {
 }
 
 h1 {
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+h3 {
   margin: 0 0 30px 0;
   text-align: center;
 }
@@ -86,14 +112,16 @@ button {
   padding: 19px 39px 18px 39px;
   color: #FFF;
   background-color: #4bc970;
+  display: block;
   font-size: 18px;
   text-align: center;
   font-style: normal;
   border-radius: 5px;
-  width: 100%;
+  width: 60%;
   border: 1px solid #3ac162;
   border-width: 1px 1px 3px;
   box-shadow: 0 -1px 0 rgba(255,255,255,0.1) inset;
+  margin: 0 auto;
   margin-bottom: 10px;
 }
 
@@ -134,11 +162,11 @@ label.light {
 @media screen and (min-width: 480px) {
 
   form {
-  	margin-top: 150px;
-    max-width: 480px;
+    max-width: 580px;
   }
 
 }
  </style>
-</html>
+ 
+  
     

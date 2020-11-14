@@ -14,6 +14,14 @@ public class User {
 		dob = d;
 		gender = g;
 	}
+	
+	public User(String email, String f, String l, String d, String g) {
+		EmailID= email;
+		firstName = f;
+		lastName = l;
+		dob = d;
+		gender = g;
+	}
 	 
 	public void setEmailID(String emailID) {
 		EmailID = emailID;
