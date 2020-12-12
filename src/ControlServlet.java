@@ -91,6 +91,30 @@ public class ControlServlet extends HttpServlet {
             	System.out.println("This is DIY list all favourite video in controlservlet");
                 listAllFavourite(request, response);
                 break;
+            case "/CoolYoutubes":
+            	System.out.println("This is DIY list all cool video in controlservlet");
+                listCoolYoutubes(request, response);
+                break;
+            case "/new_questions":
+            	System.out.println("This is DIY list all new questions in controlservlet");
+                listNewQuestions(request, response);
+                break;
+            case "/hot_videos":
+            	System.out.println("This is DIY list all new questions in controlservlet");
+                listHotVideos(request, response);
+                break;
+            case "/top_questions":
+            	System.out.println("This is DIY list all top questions in controlservlet");
+                listTopQuestions(request, response);
+                break;
+            case "/top_reviewer":
+            	System.out.println("This is DIY list all top reviewers in controlservlet");
+                listTopReviewers(request, response);
+                break;
+            case "/user_detail":
+            	System.out.println("This is DIY list all top reviewers in controlservlet");
+                listUserDetail(request, response);
+                break;
             case "/new":
             	System.out.println("This is for creating new student in controlservlet"); // not for DIY
                 showNewForm(request, response);
@@ -219,6 +243,7 @@ public class ControlServlet extends HttpServlet {
         	boolean user = peopleDAO.loginUser(emailID, password);
         	if(user) {
         		currentUserName = emailID;
+        		System.out.println("current user name: " + currentUserName);
         		RequestDispatcher dispatcher = request.getRequestDispatcher("HomepageForUser.jsp");
                 request.setAttribute("userName", emailID);
                 dispatcher.forward(request, response);
@@ -263,8 +288,8 @@ public class ControlServlet extends HttpServlet {
     
     	
     	System.out.println("user asking question method in control servelte::");
-    	System.out.println("question: " + question + " tags: " + tag_1 + " user: " + userName);
-    	boolean isSuccessful = peopleDAO.insertNewQuestion(question, tag_1 + ", " + tag_2 + ", " + tag_3, userName );
+    	System.out.println("question: " + question + " tags: " + tag_1 + " user: " + currentUserName);
+    	boolean isSuccessful = peopleDAO.insertNewQuestion(question, tag_1 + ", " + tag_2 + ", " + tag_3, currentUserName );
     	if(isSuccessful) response.sendRedirect("ListAllQuestion.jsp");
     	else response.sendRedirect("Sorry.jsp");
     
@@ -288,7 +313,7 @@ public class ControlServlet extends HttpServlet {
     private void getVideosOfQuestion(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        //Question question = peopleDAO.fetchQuestion(id);
+        System.out.println("get videos for question: " + id);
         
         List<Video> listOfVideos = peopleDAO.fetchVideosForQuestion(id);
         RequestDispatcher dispatcher = request.getRequestDispatcher("QuestionDetail.jsp");
@@ -344,7 +369,7 @@ public class ControlServlet extends HttpServlet {
         String score = request.getParameter("review");
         String url = request.getParameter("url");
         String userName = request.getParameter("userName");
-        boolean isSuccessful = peopleDAO.insertReview(remark, score, url, userName);
+        boolean isSuccessful = peopleDAO.insertReview(remark, score, url, currentUserName);
         
         if(!isSuccessful) {
         	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
@@ -362,7 +387,7 @@ public class ControlServlet extends HttpServlet {
             throws SQLException, ServletException, IOException {
         String url = request.getParameter("url");
         String userName = request.getParameter("userName");
-        boolean isSuccessful = peopleDAO.addFavourite(url, userName);
+        boolean isSuccessful = peopleDAO.addFavourite(url, currentUserName);
         
         if(!isSuccessful) {
         	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
@@ -380,7 +405,7 @@ public class ControlServlet extends HttpServlet {
             throws SQLException, ServletException, IOException {
       
         String userName = request.getParameter("userName");
-        List<String> listOfVideos = peopleDAO.listFavourites(userName);
+        List<String> listOfVideos = peopleDAO.listFavourites(currentUserName);
         System.out.println("size>>>>>>>>>>>>>>>" + listOfVideos.size());
         RequestDispatcher dispatcher = request.getRequestDispatcher("ShowMyFavourites.jsp");
         request.setAttribute("listOfVideos", listOfVideos);
@@ -394,7 +419,7 @@ public class ControlServlet extends HttpServlet {
             throws SQLException, ServletException, IOException {
         String url = request.getParameter("url");
         String userName = request.getParameter("userName");
-        boolean isSuccessful = peopleDAO.removeFavourite(url, userName);
+        boolean isSuccessful = peopleDAO.removeFavourite(url, currentUserName);
         
         if(!isSuccessful) {
         	RequestDispatcher dispatcher = request.getRequestDispatcher("Sorry.jsp");
@@ -404,6 +429,84 @@ public class ControlServlet extends HttpServlet {
             request.setAttribute("userName", userName);
             dispatcher.forward(request, response); // The forward() method works at server side, and It sends the same request and response objects to another servlet.
         }
+        
+ 
+    }
+    
+    private void listCoolYoutubes(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<CoolYoutube> listOfVideos = peopleDAO.listCoolVideos();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfVideos.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("CoolYoutubes.jsp");
+        request.setAttribute("listOfVideos", listOfVideos);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listNewQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<Question> listOfQs = peopleDAO.getNewQuestions();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfQs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("NewQuestions.jsp");
+        request.setAttribute("listOfQs", listOfQs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listHotVideos(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<Video> listOfVideos = peopleDAO.getHotVideos();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfVideos.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("HotYoutubes.jsp");
+        request.setAttribute("listOfVideos", listOfVideos);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listTopQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<Question> listOfQs = peopleDAO.getTopQuestions();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfQs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("TopQuestions.jsp");
+        request.setAttribute("listOfQs", listOfQs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listTopReviewers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<String> listOfRs = peopleDAO.getTopReviewers();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("TopReviewer.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listUserDetail(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        String userName = request.getParameter("user");
+        List<Video> listOfRs = peopleDAO.getVideosByUser(userName);
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListVideosByUser.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
         
  
     }

@@ -5,7 +5,7 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>QuestionList</title>
+        <title>NewQuestionList</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
@@ -27,29 +27,26 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
 
   
         <h2>
-            <a href="AskNewQuestionForUser.jsp">Add New Question</a>
+            <a href="AdminDashboard.jsp">Dashboard</a>
             &nbsp;&nbsp;&nbsp;
-            <a href="HomepageForUser.jsp?userName=<%= request.getParameter("userName")%>">Go to home</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="list_all_question">List All question</a> 
         </h2>
    
     <div align="center">
         <table border="1" cellpadding="5">
-            <caption><h2>List of Questions</h2></caption>
+            <caption><h2>List of questions with most videos</h2></caption>
             <tr>
                 <th>ID</th>
                 <th>Question</th>
-                <th>Tags</th>
-                <th>Date</th>
+        
+                <th>User</th>
                 <th>Actions</th>
             </tr>
-            <c:forEach var="question" items="${listQs}">
+            <c:forEach var="question" items="${listOfQs}">
                 <tr>
                     <td><c:out value="${question.questionID}" /></td>
                     <td><c:out value="${question.question}" /></td>
-                    <td><c:out value="${question.tags}" /></td>
-                    <td><c:out value="${question.date}" /></td>
+                    
+                    <td><c:out value="${question.userName}" /></td>
                     <td>
                         <a href="question_detail?id=<c:out value='${question.questionID}' />">Detail</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;

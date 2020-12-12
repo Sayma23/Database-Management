@@ -19,7 +19,7 @@
         <h3>Hello <%= request.getParameter("userName")%>! Ask a new question ...</h3>
         
         <h3>
-            <a href="ListAllQuestion.jsp">Show all questions</a>
+            <a href="ListAllQuestion.jsp?userName=<%= request.getParameter("userName")%>">Show all questions</a>
             &nbsp;&nbsp;&nbsp;
             <a href="SearchForVideo.jsp">Search for videos</a>
              

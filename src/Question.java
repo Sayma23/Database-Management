@@ -10,6 +10,12 @@ public class Question {
 		userName = u;
 	}
 	
+	public Question(int id, String q, String u) {
+		questionID= id;
+		question = q;
+		userName = u;
+	}
+	
 	public Question(int id, String q, String t, String d) {
 		questionID= id;
 		question = q;

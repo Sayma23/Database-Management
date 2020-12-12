@@ -7,6 +7,35 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
+    
+    	
+        <h1>Hey! </h1> 
+      	<h1> Lets check what's going on!</h1>
+        <h2>
+            <a href="CoolYoutubes">Cool Youtubes</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="new_questions">New Questions</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="hot_videos">Hot Youtubes</a>
+             &nbsp;&nbsp;&nbsp;
+            <a href="top_questions">Top Questions</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="PopularTags.jsp">Popular Tags</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="CommonQuestions.jsp">Common Questions</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="top_reviewer">Top Reviewer</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="PositiveReviewer.jsp">Positive Reviewer</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="PoorQuestions.jsp">Poor Questions</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="InactiveUsers.jsp">Inactive users</a>
+            &nbsp;&nbsp;&nbsp;
+           
+             
+        </h2>
+ 
       <form method="post" action="create_tables">
         <h1>Welcome Admin!</h1>
         

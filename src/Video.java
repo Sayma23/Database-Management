@@ -21,6 +21,11 @@ public class Video {
 		userName = user;
 		this.date = date;
 	}
+	
+	public Video(String url, String title) {
+		this.url = url;
+		this.title = title;
+	}
 
 
 

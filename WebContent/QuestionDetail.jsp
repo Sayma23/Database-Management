@@ -39,7 +39,7 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
                
                 <th>Preview</th>
                 <th>Title</th>
-                <th>Date</th>
+                <th>Description</th>
             </tr>
             <c:forEach var="video" items="${listOfVideos}">
                 <tr>
@@ -47,7 +47,7 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
                     <td><c:out value="${video.title}" /></td>
                     
                     <td>
-                       <c:out value="${video.date}" /></td> 
+                       <c:out value="${video.description}" /></td> 
                                     
                 
                 </tr>

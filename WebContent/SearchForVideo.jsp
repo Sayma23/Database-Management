@@ -22,7 +22,7 @@
            
             
             <fieldset>     
-          <label for="ques">Video URL:</label>
+          <label for="ques">Ask question:</label>
           <input type="text" name="ques" size = "100" placeholder="brush" required>
           
      

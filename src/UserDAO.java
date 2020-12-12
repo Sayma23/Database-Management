@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -263,16 +264,16 @@ public class UserDAO {
          
          
          //insert into review table
-         String sql41 = "INSERT INTO review VALUES ('2003-11-10',6,'No remark','navin@wayne.edu', 'https://www.youtube.com/embed/CRXCB_3gLok') ";
-         String sql42 = "INSERT INTO review VALUES ('2004-05-10',4,'Their was no detailed explaination of the mixture','sayma@wayne.edu','https://www.youtube.com/embed/X9q3FKNEyCw') ";
-         String sql43 = "INSERT INTO review VALUES ('1991-10-05',8,'No remarks','dathri@wayne.edu','https://www.youtube.com/embed/jbG-fWFuEpc') ";
-         String sql44 = "INSERT INTO review VALUES ('2002-11-11',9,'The glitter and colour match was too pretty to watch','sean@gmail.com','https://www.youtube.com/embed/PfoG04-2glc') ";
-         String sql45 = "INSERT INTO review VALUES ('2002-10-17',3,'Not to satisfaction level','sean@gmail.com','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
-         String sql46 = "INSERT INTO review VALUES ('2005-08-10',3,'Their is grafiti in the paining','sayma@wayne.edu','https://www.youtube.com/embed/R9AhRgyr61c') ";
-         String sql47 = "INSERT INTO review VALUES ('1991-10-10',8,'Could have used more colours','aditi@gmail.com','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
-         String sql48 = "INSERT INTO review VALUES ('1997-02-03',7,'Colour combo is the best','sean@gmail.com','https://www.youtube.com/embed/r7Ya3wwhDe8') ";
-         String sql49 = "INSERT INTO review VALUES ('1995-02-10',6,'My dog like it vry much','dathri@wayne.edu','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
-         String sql50 = "INSERT INTO review VALUES ('2002-01-23',10,'Really pretty and too good','ashley@gmail.com','https://www.youtube.com/embed/r7Ya3wwhDe8') ";
+         String sql41 = "INSERT INTO review VALUES ('2003-11-10', 'Poor','No remark','navin@wayne.edu', 'https://www.youtube.com/embed/CRXCB_3gLok') ";
+         String sql42 = "INSERT INTO review VALUES ('2004-05-10', 'Fair','Their was no detailed explaination of the mixture','sayma@wayne.edu','https://www.youtube.com/embed/X9q3FKNEyCw') ";
+         String sql43 = "INSERT INTO review VALUES ('1991-10-05', 'Good','No remarks','dathri@wayne.edu','https://www.youtube.com/embed/jbG-fWFuEpc') ";
+         String sql44 = "INSERT INTO review VALUES ('2002-11-11', 'Excellent','The glitter and colour match was too pretty to watch','sean@gmail.com','https://www.youtube.com/embed/PfoG04-2glc') ";
+         String sql45 = "INSERT INTO review VALUES ('2002-10-17', 'Poor' ,'Not to satisfaction level','sean@gmail.com','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
+         String sql46 = "INSERT INTO review VALUES ('2005-08-10', 'Excellent' ,'Their is grafiti in the paining','sayma@wayne.edu','https://www.youtube.com/embed/R9AhRgyr61c') ";
+         String sql47 = "INSERT INTO review VALUES ('1991-10-10', 'Good','Could have used more colours','aditi@gmail.com','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
+         String sql48 = "INSERT INTO review VALUES ('1997-02-03', 'Fair','Colour combo is the best','sean@gmail.com','https://www.youtube.com/embed/r7Ya3wwhDe8') ";
+         String sql49 = "INSERT INTO review VALUES ('1995-02-10', 'Excellent','My dog like it vry much','dathri@wayne.edu','https://www.youtube.com/embed/Fdy9uRvpI-E') ";
+         String sql50 = "INSERT INTO review VALUES ('2002-01-23', 'Excellent','Really pretty and too good','ashley@gmail.com','https://www.youtube.com/embed/r7Ya3wwhDe8') ";
          
          
          //insert into favour table
@@ -290,6 +291,8 @@ public class UserDAO {
          
          //insert into tags table
          //String sql61 = "Insert into tags values ("
+         //String sql61 = "create assertion at_most_three_ques as check (3 >= all (select count(questionID) as number "
+         		//+ " from question group by asked_by, posting_date)) ";
          
          
          connect_func();
@@ -313,7 +316,10 @@ public class UserDAO {
          statement.executeUpdate(sql10_);
          System.out.println("tables created successfully....");
          
-         //statement.executeUpdate(sql_trigger1);
+         
+         //create assertions
+         
+         
          
          //insert into user database
          statement.executeUpdate(sql11);
@@ -379,8 +385,18 @@ public class UserDAO {
          statement.executeUpdate(sql60);
          
          
-         System.out.println("insert into table");
+         System.out.println("insert into table succesful");
          
+         
+         //assertion and trigger
+         //statement.executeUpdate(sql61);
+//         System.out.println("read from table");
+//        
+//         while (resultSet.next()) {
+//        	 
+//             System.out.println("Remark??????//: " + resultSet.getString("number") );
+//         }
+//         
          
 
     	 
@@ -651,7 +667,7 @@ public class UserDAO {
         }
          
         resultSet.close();
-        statement.close();
+        preparedStatement.close();
          
         return videos;
     }
@@ -745,11 +761,11 @@ public List<String> searchForVideos(String question) throws SQLException {
         return videos;
     }
 
-public boolean insertReview (String remark, String score, String url, String userName) throws SQLException {
+public boolean insertReview (String remark, String score, String url, String userName) throws SQLException, SQLIntegrityConstraintViolationException {
     
 	connect_func();    
 	
-	String sql2 = "select * from video where url = '" + url + "'";
+	String sql2 = "select * from video where url like '%" + url + "%'";
 	statement =  (Statement) connect.createStatement();
     ResultSet resultSet = statement.executeQuery(sql2);
     System.out.println("read from table");
@@ -759,7 +775,7 @@ public boolean insertReview (String remark, String score, String url, String use
    	 	
         posted_by = resultSet.getString("posted_by");
        
-        System.out.println("posted by "+ posted_by);
+        System.out.println("posted by "+ posted_by + " userName" + userName );
     }
     if(posted_by.length() > 0 && posted_by.equals(userName)) {
     	System.out.println("Sorry, its your own video ");
@@ -897,7 +913,183 @@ public boolean removeFavourite (String url, String userName) throws SQLException
     System.out.println("data deleted from favourites table ");
     return rowInserted;
 }
- 
+
+
+public List<CoolYoutube> listCoolVideos() throws SQLException {
+    
+	List<CoolYoutube> coolVideos = new ArrayList<CoolYoutube>();
+    String sql = "SELECT distinct R.url as url , V.title as title, Q.question as ques, Q.QuestionID as id from review R, Video V, Question Q where"
+    		+ " R.url = V.url and R.score = 'Excellent' and V.answer_to = Q.QuestionID ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+   
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String url = resultSet.getString("Url");
+        String ques = resultSet.getString("ques");
+        String title = resultSet.getString("title");
+        int id = resultSet.getInt("id");
+        System.out.println("Url: " + url + " Question: " + ques + " title: " + title +" id: " + id);
+        CoolYoutube c = new CoolYoutube(url, ques, title, id);
+        coolVideos.add(c);
+    }
+    System.out.println("size::::" + coolVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return coolVideos;
+}
+
+public List<Question> getNewQuestions() throws SQLException {
+    
+	List<Question> newQs = new ArrayList<Question>();
+    String sql = "SELECT * from question Q where Q.posting_date = ?";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    long millis=System.currentTimeMillis();  
+	java.sql.Date sqlDate = new java.sql.Date(millis);
+    preparedStatement.setDate(1, sqlDate);
+   
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String user  = resultSet.getString("asked_by");
+        String ques = resultSet.getString("question");
+        String tags = resultSet.getString("tags");
+        int id = resultSet.getInt("questionID");
+        System.out.println("asked by " + user + " Question: " + ques + " tags: " + tags +" id: " + id);
+        Question c = new Question(id, ques, tags, sqlDate.toString(), user);
+        newQs.add(c);
+    }
+    System.out.println("size::::" + newQs.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return newQs;
+}
+
+public List<Video> getHotVideos() throws SQLException {
+    
+	List<Video> hotVideos = new ArrayList<Video>();
+    String sql = "SELECT R.url, V.title as title, count(score) as ranking from review R, video V where R.url = V.url group by R.url order by ranking desc limit 3 ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String url  = resultSet.getString("url");
+        String title = resultSet.getString("title");
+        int count = resultSet.getInt("ranking");
+        System.out.println("url " + url + " count: " + count );
+        Video v = new Video(url,title);
+        hotVideos.add(v);
+    }
+    System.out.println("size::::" + hotVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return hotVideos;
+}
+
+public List<Question> getTopQuestions() throws SQLException {
+    
+	List<Question> newQs = new ArrayList<Question>();
+    String sql = "SELECT q.questionid as id, q.question as question, " + 
+    		" q.asked_by as user, count(answer_to) as a from question q, " + 
+    		" video v where v.answer_to = q.questionid group by v.answer_to having count(v.answer_to) = ("
+    		+ " select count(answer_to) as ans " + 
+    		" from  video group by answer_to order by ans desc limit 1) ";
+     
+    connect_func();
+      
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String user  = resultSet.getString("user");
+        String ques = resultSet.getString("question");
+        int id = resultSet.getInt("id");
+        int answers = resultSet.getInt("a");
+        System.out.println("asked by " + user + " Question: " + ques +" id: " + id + " count: " + answers);
+        Question c = new Question(id, ques, user);
+        newQs.add(c);
+    }
+    System.out.println("size::::" + newQs.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return newQs;
+}
+
+public List<String> getTopReviewers() throws SQLException {
+    
+	List<String> topRs = new ArrayList<String>();
+    String sql = "SELECT r.emailID, count(r.score) as review_count from review r  "
+    		+ " group by r.emailID having count(r.score) = ("
+    		+ " select count(score) as rev " + 
+    		" from review group by emailID order by rev desc limit 1) ";
+     
+    connect_func();
+      
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String user  = resultSet.getString("emailID");
+        int answers = resultSet.getInt("review_count");
+        System.out.println("USer: " + user + " count: " + answers);
+        
+        topRs.add(user);
+    }
+    System.out.println("size::::" + topRs.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return topRs;
+}
+
+public List<Video> getVideosByUser(String user) throws SQLException {
+    
+	List<Video> hotVideos = new ArrayList<Video>();
+    String sql = "SELECT url, title from video where posted_by =? ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, user);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String url  = resultSet.getString("url");
+        String title = resultSet.getString("title");
+        Video v = new Video(url,title);
+        hotVideos.add(v);
+    }
+    System.out.println("size::::" + hotVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return hotVideos;
+}
 
      
 }

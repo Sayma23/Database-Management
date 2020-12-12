@@ -40,3 +40,19 @@ Step 6(Dathri Yeddula): After successful sign up, you can log into the system.
 
 You can watch it here too: https://www.youtube.com/watch?v=8EvDXuZMwWA
 
+
+Description of Part 2 of the project is given below with citation of individuals who did what: 
+
+Step 1(Sayma Sultana): At first login to the system from SignIn.jsp file uisng any username and password. It will go to HomepageForUser.jsp page.
+
+Step 2(Sayma Sultana): For asking a new question, click ask new question, it will take to AskNewQuestionForUser.jsp page. User have to insert the question with three tags, date will be taken from system and username will bethe loogged in username by default.
+
+Step 3(Sayma Sultana): From homepage, click "Show all question", it will take to list all question, where all question will be listed, clicking "detail" , one can go to the details of a question where all videos for that question will be shown. User can insert new video for that question from the page
+using "add new video" link. It will take to InsertAnotherVideo.jsp page. User have to give you tube video link, video title and description to insert the video.
+
+Step 4(Sayma Sultana): User can search for videos from homepage, using "Search for video". It will take to searchForVideo.jsp page where user have to ask any question or keyword.
+It will show all related video in the page.
+
+Step 5(Dathri yeddula): from the search result, user can go to video detail on VideoDetail.jsp page where user can give review to anothers video.
+
+Step 6(Sayma Sultana): User can also add or remove any video to or from  favourite list from the video detail page. From HOmepageForUser.jsp, user can go to see his faavourite list, on SHowMyFavourites.jsp page.

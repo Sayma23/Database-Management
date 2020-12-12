@@ -48,11 +48,6 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
             <c:forEach var="video" items="${listOfVideos}">
                 <tr>
               		<td><iframe width="420" height="315" src="${video}"> </iframe>
-             		<td>
-                        <a href="VodeiDetail.jsp?video_url=<c:out value='${video}'/>&userName=<%= request.getParameter("userName")%>">Detail</a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                    
-                    </td>
                 
                 </tr>
             </c:forEach>
