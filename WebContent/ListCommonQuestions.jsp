@@ -5,7 +5,7 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Poor Questions</title>
+        <title>CommonQuestionList</title>
         <link rel="stylesheet" href="css/normalize.css">
         <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
@@ -26,27 +26,27 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
 
 
   
-        <h2>
+         <h2>
             <a href="AdminDashboard.jsp">Dashboard</a>
             &nbsp;&nbsp;&nbsp;
         </h2>
    
     <div align="center">
         <table border="1" cellpadding="5">
-            <caption><h2>List of questions with only poor reviews</h2></caption>
+            <caption><h2>List of common questions</h2></caption>
             <tr>
                 <th>ID</th>
                 <th>Question</th>
-        
-                <th>User</th>
+                <th>Tags</th>
+                <th>Date</th>
                 <th>Actions</th>
             </tr>
             <c:forEach var="question" items="${listOfQs}">
                 <tr>
                     <td><c:out value="${question.questionID}" /></td>
                     <td><c:out value="${question.question}" /></td>
-                    
-                    <td><c:out value="${question.userName}" /></td>
+                    <td><c:out value="${question.tags}" /></td>
+                    <td><c:out value="${question.date}" /></td>
                     <td>
                         <a href="question_detail?id=<c:out value='${question.questionID}' />">Detail</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;

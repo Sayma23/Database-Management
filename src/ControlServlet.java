@@ -115,6 +115,34 @@ public class ControlServlet extends HttpServlet {
             	System.out.println("This is DIY list all top reviewers in controlservlet");
                 listUserDetail(request, response);
                 break;
+            case "/positive_reviewer":
+            	System.out.println("This is DIY list all positive reviewers in controlservlet");
+                listPositiveReviewers(request, response);
+                break;
+            case "/user_detail_review":
+            	System.out.println("This is DIY list all reviews for a user in controlservlet");
+                listUserDetailReview(request, response);
+                break;
+            case "/poor_questions":
+            	System.out.println("This is DIY list all poor questions in controlservlet");
+                listPoorQuestions(request, response);
+                break;
+            case "/inactive_users":
+            	System.out.println("This is DIY list all inactive users in controlservlet");
+                listInactiveUsers(request, response);
+                break;
+            case "/popular_tags":
+            	System.out.println("This is DIY list all popular tags in controlservlet");
+                listPopularTags(request, response);
+                break;
+            case "/common_questions":
+            	System.out.println("This is DIY list all common questions in controlservlet");
+                listUsers(request, response);
+                break;
+            case "/search_common_ques":
+            	System.out.println("This is DIY list all common questions in controlservlet");
+                listCommonQuestions(request, response);
+                break;
             case "/new":
             	System.out.println("This is for creating new student in controlservlet"); // not for DIY
                 showNewForm(request, response);
@@ -160,10 +188,10 @@ public class ControlServlet extends HttpServlet {
     
     private void listUsers(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<User> listUser = peopleDAO.listAllUser();
-        System.out.println("<<<<<<length:  " + listUser.size());
-        request.setAttribute("listUser_", listUser);       
-        RequestDispatcher dispatcher = request.getRequestDispatcher("ListAllUser.jsp");       
+        List<User> listOfUsers = peopleDAO.listAllUser();
+        System.out.println("<<<<<<length:  " + listOfUsers.size());
+        request.setAttribute("listOfUsers", listOfUsers);       
+        RequestDispatcher dispatcher = request.getRequestDispatcher("CommonQuestions.jsp");       
         dispatcher.forward(request, response);
     }
  
@@ -510,6 +538,87 @@ public class ControlServlet extends HttpServlet {
         
  
     }
+    
+    private void listPositiveReviewers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter();
+        List<String> listOfRs = peopleDAO.getPositiveReviewers();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("PositiveReviewer.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listUserDetailReview(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        String userName = request.getParameter("user");
+        List<Review> listOfRs = peopleDAO.getReviewsByUser(userName);
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListReviewsByUser.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listPoorQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter("userName");
+        List<Question> listOfQs = peopleDAO.getPoorQuestions();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfQs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("PoorQuestions.jsp");
+        request.setAttribute("listOfQs", listOfQs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listInactiveUsers(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter();
+        List<String> listOfRs = peopleDAO.getInactiveUsers();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("InactiveUsers.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listPopularTags(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        //String userName = request.getParameter();
+        List<String> listOfRs = peopleDAO.getPopularTags();
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfRs.size());
+        RequestDispatcher dispatcher = request.getRequestDispatcher("PopularTags.jsp");
+        request.setAttribute("listOfRs", listOfRs);
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    private void listCommonQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+      
+        String user1 = request.getParameter("user1");
+        String user2 = request.getParameter("user2");
+        List<Question> listOfQs = peopleDAO.getCommonQuestions(user1, user2);
+        System.out.println("size>>>>>>>>>>>>>>>" + listOfQs.size());
+        request.setAttribute("listOfQs", listOfQs);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListCommonQuestions.jsp");
+        dispatcher.forward(request, response); 
+        
+ 
+    }
+    
+    
  
 
 }

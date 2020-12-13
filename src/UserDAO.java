@@ -25,9 +25,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 //import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 /**
  * Servlet implementation class Connect
  */
@@ -96,7 +98,7 @@ public class UserDAO {
             String address = resultSet.getString("Last_name");
             String status = resultSet.getString("gender");
             String dob = resultSet.getString("DOB");
-             
+            System.out.println("email: " + id);
             User people = new User(id, name, address, dob, status);
             listUser.add(people);
         }        
@@ -1089,6 +1091,218 @@ public List<Video> getVideosByUser(String user) throws SQLException {
     preparedStatement.close();
      
     return hotVideos;
+}
+
+
+public List<String> getPositiveReviewers() throws SQLException {
+    
+	List<String> hotVideos = new ArrayList<String>();
+    String sql = "SELECT distinct emailID from review where ( score = 'Good' or score = 'Excellent') "
+    		 + " and emailid not in ( select emailID from review where score = 'Poor' or score = 'Fair') ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String emailID  = resultSet.getString("emailID");
+        System.out.println(" good reviewer: " + emailID);
+        hotVideos.add(emailID);
+    }
+    System.out.println("size::::" + hotVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return hotVideos;
+}
+
+public List<Review> getReviewsByUser(String user) throws SQLException {
+    
+	List<Review> hotVideos = new ArrayList<Review>();
+    String sql = "SELECT url, score, remark from review where emailID =? ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, user);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String url  = resultSet.getString("url");
+        String score = resultSet.getString("score");
+        String remark = resultSet.getString("remark");
+        Review v = new Review(url, score, remark);
+        hotVideos.add(v);
+    }
+    System.out.println("size::::" + hotVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return hotVideos;
+}
+
+public List<Question> getPoorQuestions() throws SQLException {
+    
+	List<Question> newQs = new ArrayList<Question>();
+    String sql = "SELECT q.questionid as id, q.question as question, " + 
+    		" q.asked_by as user from question q, " + 
+    		" video v, review r where v.answer_to = q.questionid and r.url = v.url "
+    		+ " and r.score = 'Poor' "
+    		+ " and q.questionid not in ( SELECT qs.questionid from question qs, " + 
+    		" video vi, review re where vi.answer_to = qs.questionid and re.url = vi.url " + 
+    		"  and ( re.score = 'Fair' or re.score = 'Good' or re.score = 'Excellent') ) " ;
+//     
+    connect_func();
+      
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String user  = resultSet.getString("user");
+        String ques = resultSet.getString("question");
+        int id = resultSet.getInt("id");
+        System.out.println("asked by " + user + " Question: " + ques +" id: " + id );
+        Question c = new Question(id, ques, user);
+        newQs.add(c);
+    }
+    System.out.println("size::::" + newQs.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return newQs;
+}
+
+public List<String> getInactiveUsers() throws SQLException {
+    
+	List<String> hotVideos = new ArrayList<String>();
+    String sql = "SELECT emailID from user where emailID not in ( "
+    		+ " select asked_by from question) and emailID not in ("
+    		+ " select posted_by from video) and emailID not in ("
+    		+ " select emailID from review) ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        String emailID  = resultSet.getString("emailID");
+        System.out.println(" good reviewer: " + emailID);
+        hotVideos.add(emailID);
+    }
+    System.out.println("size::::" + hotVideos.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return hotVideos;
+}
+
+public List<String> getPopularTags() throws SQLException {
+    
+	HashMap<String, ArrayList<String>> tagU = new HashMap<>();
+	ArrayList<String> popularTags = new ArrayList<>();
+	
+    String sql = "SELECT count(emailid) as user_count from user ";
+     
+    connect_func();
+     
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+   
+    ResultSet resultSet = preparedStatement.executeQuery();
+    int count = 0;
+    while (resultSet.next()) {
+        count  = resultSet.getInt("user_count");
+        System.out.println(" count: " + count);
+    }
+    int half = count/2;
+    
+    
+    String sql1 = "SELECT asked_by, tags from question ";
+    
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql1);
+    
+    ResultSet resultSet1 = preparedStatement.executeQuery();
+    while (resultSet1.next()) {
+        String tags  = resultSet1.getString("tags");
+        String user = resultSet1.getString("asked_by");
+        tags = tags.trim();
+        String[] taglist = tags.split(",");
+        if(taglist != null && taglist.length > 0) {
+        	for(int i = 0; i< taglist.length; i++) {
+        		String temp = taglist[i].trim();
+        		ArrayList<String> tList = tagU.get(temp);
+        		if(tList == null) {
+        			tList = new ArrayList<>();
+        			tList.add(user);
+        		}else {
+        			tList.add(temp);
+        		}
+        		tagU.put(temp, tList);
+        	}
+        }
+        
+    }
+    Iterator hmIterator = tagU.entrySet().iterator();
+    
+    while(hmIterator.hasNext()) {
+    	Map.Entry entry = (Map.Entry)hmIterator.next();
+    	String temp = (String) entry.getKey();
+    	ArrayList<String> tempList = (ArrayList<String>) entry.getValue();
+    	
+    	System.out.println("Key: " + temp + " value: " + tempList.size());
+    	if(tempList.size() >= half) popularTags.add(temp);
+ 
+    }
+    
+    
+    resultSet.close();
+    resultSet1.close();
+    preparedStatement.close();
+     
+    return popularTags;
+}
+
+public List<Question> getCommonQuestions(String user1, String user2) throws SQLException {
+    
+	List<Question> newQs = new ArrayList<Question>();
+    String sql = "select distinct q.questionid as id, q.question as question, q.tags as tags, q.posting_date as date, "
+    		+ "  v1.answer_to, v1.posted_by, v2.answer_to, v2.posted_by "
+    		+ " from question q, video v1, video v2 where v1.posted_by = ? and v2.posted_by = ? and "
+    		+ "  v1.answer_to = v2.answer_to and v2.answer_to = q.questionid and not ( v1.posted_by <=> v2.posted_by) " ;
+//     
+    connect_func();
+      
+    preparedStatement = (PreparedStatement) connect.prepareStatement(sql);
+    preparedStatement.setString(1, user1);
+    preparedStatement.setString(2, user2);
+    
+    
+     
+    
+    ResultSet resultSet = preparedStatement.executeQuery();
+     
+    while (resultSet.next()) {
+        //String user  = resultSet.getString("user");
+        String ques = resultSet.getString("question");
+        int id = resultSet.getInt("id");
+        String tags = resultSet.getString("tags");
+        Date date = resultSet.getDate("date");
+        System.out.println("tags: " + tags + " Question: " + ques +" id: " + id );
+        Question c = new Question(id, ques, tags, date.toString());
+        newQs.add(c);
+    }
+    System.out.println("size::::" + newQs.size());
+    resultSet.close();
+    preparedStatement.close();
+     
+    return newQs;
 }
 
      

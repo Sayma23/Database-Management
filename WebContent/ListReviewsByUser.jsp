@@ -1,20 +1,18 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<% response.addHeader("X-Frame-Options", "SAMEORIGIN"); %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Poor Questions</title>
-        <link rel="stylesheet" href="css/normalize.css">
-        <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/main.css">
         
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     </head>
 <body>
 
 <%-- need to debut this part of the code to make it work, ideally we would like to see 
- all people are listed intially when the page is run as the entry page.
+ all people are listed initially when the page is run as the entry page.
 --%> 
 <%--
 if(request.getParameter("listQs") == null) { // we want to make sure that we already have all the people
@@ -29,29 +27,26 @@ if(request.getParameter("listQs") == null) { // we want to make sure that we alr
         <h2>
             <a href="AdminDashboard.jsp">Dashboard</a>
             &nbsp;&nbsp;&nbsp;
+            
         </h2>
    
     <div align="center">
         <table border="1" cellpadding="5">
-            <caption><h2>List of questions with only poor reviews</h2></caption>
-            <tr>
-                <th>ID</th>
-                <th>Question</th>
         
-                <th>User</th>
-                <th>Actions</th>
+            <tr>
+               
+                <th>Preview</th>
+                <th>Score</th>
+                <th>Remark</th>
             </tr>
-            <c:forEach var="question" items="${listOfQs}">
+            <c:forEach var="review" items="${listOfRs}">
                 <tr>
-                    <td><c:out value="${question.questionID}" /></td>
-                    <td><c:out value="${question.question}" /></td>
-                    
-                    <td><c:out value="${question.userName}" /></td>
-                    <td>
-                        <a href="question_detail?id=<c:out value='${question.questionID}' />">Detail</a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
+              		<td><iframe width="420" height="315" src="${review.url}"> </iframe>
+                    <td><c:out value="${review.score}" /></td>
+                    <td><c:out value="${review.remark}" /></td>
+                 
                                     
-                    </td>
+                
                 </tr>
             </c:forEach>
         </table>
